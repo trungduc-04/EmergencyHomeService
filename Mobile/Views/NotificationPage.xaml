@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.NotificationPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:EmergencyHomeServiceMobile.Converters"
+    Title="Thông báo">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter
+            x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,*"
+        RowSpacing="15">
+
+        <Grid
+            ColumnDefinitions="*,Auto">
+
+            <VerticalStackLayout>
+
+                <Label
+                    Text="Thông báo"
+                    FontSize="28"
+                    FontAttributes="Bold" />
+
+                <Label
+                    x:Name="UnreadLabel"
+                    Text="Chưa đọc: 0"
+                    FontSize="14" />
+
+            </VerticalStackLayout>
+
+            <Button
+                Grid.Column="1"
+                Text="ĐỌC TẤT CẢ"
+                Clicked="MarkAllRead_Clicked" />
+
+        </Grid>
+
+        <BoxView
+            Grid.Row="1"
+            HeightRequest="1" />
+
+        <CollectionView
+            Grid.Row="2"
+            x:Name="NotificationsCollectionView"
+            SelectionMode="None">
+
+            <CollectionView.EmptyView>
+
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="Chưa có thông báo."
+                        FontSize="16" />
+
+                </VerticalStackLayout>
+
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Margin="0,0,0,12"
+                        Padding="15"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+
+                        <VerticalStackLayout
+        Spacing="8">
+
+                            <Label
+                        Text="{Binding Title}"
+                        FontSize="17"
+                        FontAttributes="Bold" />
+
+                            <Label
+                        Text="{Binding Message}"
+                        FontSize="14" />
+
+                            <Label
+                        Text="{Binding Type}"
+                        FontSize="12" />
+
+                            <Label
+                        Text="{Binding CreatedAt}"
+                        FontSize="12" />
+
+                            <Label
+                        Text="ĐÃ ĐỌC"
+                        FontSize="12"
+                        IsVisible="{Binding IsRead}"
+                        FontAttributes="Bold" />
+
+                            <Button
+                        Text="ĐÁNH DẤU ĐÃ ĐỌC"
+                        Clicked="MarkRead_Clicked"
+                        CommandParameter="{Binding .}"
+                        IsVisible="{Binding IsRead, Converter={StaticResource InverseBoolConverter}}" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <ActivityIndicator
+            Grid.Row="2"
+            x:Name="LoadingIndicator"
+            IsVisible="False"
+            IsRunning="False"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>

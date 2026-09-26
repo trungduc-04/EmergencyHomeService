@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+
+    <title>Emergency Home Service - Admin</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            color: #222;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background: white;
+            width: 360px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.1);
+        }
+
+        .login-box h1 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        input,
+        button,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            border-radius: 7px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: #333;
+            color: white;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .error {
+            color: #c00;
+            font-size: 14px;
+        }
+
+        .topbar {
+            background: #222;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar button {
+            width: auto;
+            margin: 0;
+            background: #555;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.06);
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav button {
+            width: auto;
+            margin: 0;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        th {
+            background: #fafafa;
+        }
+
+        .small-btn {
+            width: auto;
+            margin: 0 4px 0 0;
+            padding: 6px 10px;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- LOGIN -->
+<!-- ========================= -->
+
+<div id="loginPage" class="login-page">
+
+    <div class="login-box">
+
+        <h1>Admin Login</h1>
+
+        <input
+            id="emailOrPhone"
+            placeholder="Email hoặc số điện thoại" />
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Mật khẩu" />
+
+        <button onclick="login()">
+            ĐĂNG NHẬP
+        </button>
+
+        <div
+            id="loginError"
+            class="error">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- ADMIN -->
+<!-- ========================= -->
+
+<div id="adminPage" class="hidden">
+
+    <div class="topbar">
+
+        <div>
+            Emergency Home Service - ADMIN
+        </div>
+
+        <button onclick="logout()">
+            Đăng xuất
+        </button>
+
+    </div>
+
+    <div class="content">
+
+        <div class="nav">
+
+            <button onclick="showDashboard()">
+                Dashboard
+            </button>
+
+            <button onclick="showUsers()">
+                Users
+            </button>
+
+            <button onclick="showWorkers()">
+                Workers
+            </button>
+
+            <button onclick="showRequests()">
+                Requests
+            </button>
+
+            <button onclick="showServices()">
+                Services
+            </button>
+
+        </div>
+
+        <div id="mainContent"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API = "";
+
+let token =
+    sessionStorage.getItem("admin_token");
+
+
+function authHeaders()
+{
+    return {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+    };
+}
+
+
+async function login()
+{
+    const emailOrPhone =
+        document.getElementById(
+            "emailOrPhone").value.trim();
+
+    const password =
+        document.getElementById(
+            "password").value;
+
+    const error =
+        document.getElementById(
+            "loginError");
+
+    error.innerText = "";
+
+    try
+    {
+        const response =
+            await fetch(
+                API + "/api/Auth/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        emailOrPhone,
+                        password
+                    })
+                });
+
+        const data =
+            await response.json();
+
+        if (!response.ok)
+        {
+            throw new Error(
+                data.message ||
+                "Đăng nhập thất bại.");
+        }
+
+        if (
+            String(data.role).toUpperCase()
+            !== "ADMIN"
+        )
+        {
+            throw new Error(
+                "Tài khoản này không phải ADMIN.");
+        }
+
+        token = data.token;
+
+        sessionStorage.setItem(
+            "admin_token",
+            token);
+
+        document.getElementById(
+            "loginPage").classList.add("hidden");
+
+        document.getElementById(
+            "adminPage").classList.remove("hidden");
+
+        showDashboard();
+    }
+    catch (e)
+    {
+        error.innerText = e.message;
+    }
+}
+
+
+function logout()
+{
+    sessionStorage.removeItem(
+        "admin_token");
+
+    location.reload();
+}
+
+
+async function apiGet(url)
+{
+    const response =
+        await fetch(
+            API + url,
+            {
+                headers: authHeaders()
+            });
+
+    const data =
+        await response.json();
+
+    if (!response.ok)
+    {
+        throw new Error(
+            data.message ||
+            "API Error");
+    }
+
+    return data;
+}
+
+
+async function apiPut(url, body)
+{
+    const response =
+        await fetch(
+            API + url,
+            {
+                method: "PUT",
+                headers: authHeaders(),
+                body: JSON.stringify(body)
+            });
+
+    const data =
+        await response.json();
+
+    if (!response.ok)
+    {
+        throw new Error(
+            data.message ||
+            "API Error");
+    }
+
+    return data;
+}
+
+
+// =========================
+// DASHBOARD
+// =========================
+
+async function showDashboard()
+{
+    const data =
+        await apiGet(
+            "/api/admin/dashboard");
+
+    document.getElementById(
+        "mainContent").innerHTML = `
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-title">
+                    Tổng Users
+                </div>
+                <div class="card-value">
+                    ${data.totalUsers}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Customers
+                </div>
+                <div class="card-value">
+                    ${data.customerCount}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Workers
+                </div>
+                <div class="card-value">
+                    ${data.workerCount}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Requests
+                </div>
+                <div class="card-value">
+                    ${data.totalRequests}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Worker Online
+                </div>
+                <div class="card-value">
+                    ${data.onlineWorkers}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Worker Available
+                </div>
+                <div class="card-value">
+                    ${data.availableWorkers}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Completed
+                </div>
+                <div class="card-value">
+                    ${data.completedRequests}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    Ratings
+                </div>
+                <div class="card-value">
+                    ${data.totalRatings}
+                </div>
+            </div>
+
+        </div>
+    `;
+}
+
+
+// =========================
+// USERS
+// =========================
+
+async function showUsers()
+{
+    const data =
+        await apiGet(
+            "/api/admin/users");
+
+    let html = `
+        <div class="section">
+
+        <h2>Users</h2>
+
+        <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Thao tác</th>
+        </tr>
+    `;
+
+    for (const user of data)
+    {
+        html += `
+        <tr>
+
+            <td>${user.userId}</td>
+
+            <td>${user.fullName}</td>
+
+            <td>${user.email ?? ""}</td>
+
+            <td>${user.phone}</td>
+
+            <td>${user.role}</td>
+
+            <td>
+                ${user.isActive
+                    ? "Có"
+                    : "Không"}
+            </td>
+
+            <td>
+                ${
+                    user.role === "ADMIN"
+                    ? ""
+                    :
+                    `<button
+                        class="small-btn"
+                        onclick="toggleUser(
+                            ${user.userId},
+                            ${!user.isActive})">
+                        ${user.isActive
+                            ? "Khóa"
+                            : "Mở khóa"}
+                    </button>`
+                }
+            </td>
+
+        </tr>
+        `;
+    }
+
+    html += `
+        </table>
+        </div>
+    `;
+
+    document.getElementById(
+        "mainContent").innerHTML = html;
+}
+
+
+async function toggleUser(id, isActive)
+{
+    try
+    {
+        await apiPut(
+            `/api/admin/users/${id}/status`,
+            {
+                isActive
+            });
+
+        await showUsers();
+    }
+    catch (e)
+    {
+        alert(e.message);
+    }
+}
+
+
+// =========================
+// WORKERS
+// =========================
+
+async function showWorkers()
+{
+    const data =
+        await apiGet(
+            "/api/admin/workers");
+
+    let html = `
+        <div class="section">
+
+        <h2>Workers</h2>
+
+        <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Họ tên</th>
+            <th>Online</th>
+            <th>Available</th>
+            <th>Verified</th>
+            <th>Rating</th>
+            <th>Jobs</th>
+            <th>Dịch vụ</th>
+            <th>Thao tác</th>
+        </tr>
+    `;
+
+    for (const worker of data)
+    {
+        html += `
+        <tr>
+
+            <td>${worker.workerId}</td>
+
+            <td>${worker.fullName}</td>
+
+            <td>
+                ${worker.isOnline
+                    ? "Có"
+                    : "Không"}
+            </td>
+
+            <td>
+                ${worker.isAvailable
+                    ? "Có"
+                    : "Không"}
+            </td>
+
+            <td>
+                ${worker.isVerified
+                    ? "Đã xác minh"
+                    : "Chưa xác minh"}
+            </td>
+
+            <td>
+                ${worker.averageRating}
+            </td>
+
+            <td>
+                ${worker.totalJobs}
+            </td>
+
+            <td>
+                ${(worker.services || [])
+                    .join(", ")}
+            </td>
+
+            <td>
+
+                <button
+                    class="small-btn"
+                    onclick="toggleWorkerVerify(
+                        ${worker.workerId},
+                        ${!worker.isVerified})">
+
+                    ${worker.isVerified
+                        ? "Hủy xác minh"
+                        : "Xác minh"}
+
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+    }
+
+    html += `
+        </table>
+        </div>
+    `;
+
+    document.getElementById(
+        "mainContent").innerHTML = html;
+}
+
+
+async function toggleWorkerVerify(
+    id,
+    isVerified)
+{
+    try
+    {
+        await apiPut(
+            `/api/admin/workers/${id}/verify`,
+            {
+                isVerified
+            });
+
+        await showWorkers();
+    }
+    catch (e)
+    {
+        alert(e.message);
+    }
+}
+
+
+// =========================
+// REQUESTS
+// =========================
+
+async function showRequests()
+{
+    const data =
+        await apiGet(
+            "/api/admin/requests");
+
+    let html = `
+        <div class="section">
+
+        <h2>Requests</h2>
+
+        <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Worker</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Address</th>
+            <th>Rating</th>
+            <th>Created</th>
+        </tr>
+    `;
+
+    for (const request of data)
+    {
+        html += `
+        <tr>
+
+            <td>${request.requestId}</td>
+
+            <td>
+                ${request.customerName}
+            </td>
+
+            <td>
+                ${request.workerName ?? "Chưa có"}
+            </td>
+
+            <td>
+                ${request.serviceName}
+            </td>
+
+            <td class="status">
+                ${request.status}
+            </td>
+
+            <td>
+                ${request.address ?? ""}
+            </td>
+
+            <td>
+                ${request.ratingScore ?? "-"}
+            </td>
+
+            <td>
+                ${formatDate(request.createdAt)}
+            </td>
+
+        </tr>
+        `;
+    }
+
+    html += `
+        </table>
+        </div>
+    `;
+
+    document.getElementById(
+        "mainContent").innerHTML = html;
+}
+
+
+// =========================
+// SERVICES
+// =========================
+
+async function showServices()
+{
+    const data =
+        await apiGet(
+            "/api/admin/services");
+
+    let html = `
+        <div class="section">
+
+        <h2>Services</h2>
+
+        <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Mô tả</th>
+            <th>Active</th>
+            <th>Thao tác</th>
+        </tr>
+    `;
+
+    for (const service of data)
+    {
+        html += `
+        <tr>
+
+            <td>${service.serviceId}</td>
+
+            <td>${service.serviceName}</td>
+
+            <td>${service.description ?? ""}</td>
+
+            <td>
+                ${service.isActive
+                    ? "Có"
+                    : "Không"}
+            </td>
+
+            <td>
+
+                <button
+                    class="small-btn"
+                    onclick="toggleService(
+                        ${service.serviceId},
+                        ${!service.isActive})">
+
+                    ${service.isActive
+                        ? "Vô hiệu hóa"
+                        : "Kích hoạt"}
+
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+    }
+
+    html += `
+        </table>
+        </div>
+    `;
+
+    document.getElementById(
+        "mainContent").innerHTML = html;
+}
+
+
+async function toggleService(
+    id,
+    isActive)
+{
+    try
+    {
+        await apiPut(
+            `/api/admin/services/${id}/status`,
+            {
+                isActive
+            });
+
+        await showServices();
+    }
+    catch (e)
+    {
+        alert(e.message);
+    }
+}
+
+
+function formatDate(value)
+{
+    if (!value)
+        return "";
+
+    return new Date(value)
+        .toLocaleString("vi-VN");
+}
+
+
+// =========================
+// AUTO LOGIN CHECK
+// =========================
+
+if (token)
+{
+    document.getElementById(
+        "loginPage").classList.add("hidden");
+
+    document.getElementById(
+        "adminPage").classList.remove("hidden");
+
+    showDashboard();
+}
+
+</script>
+
+</body>
+</html>

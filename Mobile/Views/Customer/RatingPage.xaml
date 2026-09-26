@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.RatingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Đánh giá">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="25"
+            Spacing="20">
+
+            <Label
+                Text="Đánh giá dịch vụ"
+                FontSize="28"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="WorkerNameLabel"
+                Text="Đánh giá thợ sửa chữa"
+                FontSize="20"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Mức độ hài lòng"
+                FontSize="18"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="10">
+
+                <Button
+                    x:Name="Star1Button"
+                    Text="★"
+                    FontSize="30"
+                    Clicked="StarButton_Clicked" />
+
+                <Button
+                    x:Name="Star2Button"
+                    Text="★"
+                    FontSize="30"
+                    Clicked="StarButton_Clicked" />
+
+                <Button
+                    x:Name="Star3Button"
+                    Text="★"
+                    FontSize="30"
+                    Clicked="StarButton_Clicked" />
+
+                <Button
+                    x:Name="Star4Button"
+                    Text="★"
+                    FontSize="30"
+                    Clicked="StarButton_Clicked" />
+
+                <Button
+                    x:Name="Star5Button"
+                    Text="★"
+                    FontSize="30"
+                    Clicked="StarButton_Clicked" />
+
+            </HorizontalStackLayout>
+
+            <Label
+                x:Name="ScoreLabel"
+                Text="Chưa chọn điểm"
+                FontSize="16"
+                HorizontalOptions="Center" />
+
+            <Editor
+                x:Name="CommentEditor"
+                Placeholder="Nhập nhận xét của bạn..."
+                AutoSize="TextChanges"
+                MinimumHeightRequest="120" />
+
+            <Button
+                x:Name="SubmitButton"
+                Text="GỬI ĐÁNH GIÁ"
+                Clicked="SubmitButton_Clicked" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

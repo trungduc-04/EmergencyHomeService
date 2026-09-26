@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Worker.WorkerRatingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Đánh giá">
+
+    <VerticalStackLayout Padding="20">
+
+        <Label
+            Text="Đánh giá từ khách hàng"
+            FontSize="26"
+            FontAttributes="Bold" />
+
+        <CollectionView
+            x:Name="RatingsCollectionView">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Padding="15"
+                        Margin="0,5"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+
+                        <VerticalStackLayout
+                            Spacing="6">
+
+                            <Label
+                                Text="{Binding Score, StringFormat='⭐ {0}/5'}"
+                                FontSize="18"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Comment}" />
+
+                            <Label
+                                Text="{Binding CreatedAt}" />
+
+                            <Label
+                                Text="{Binding RequestId, StringFormat='Request #{0}'}"
+                                FontSize="12" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </VerticalStackLayout>
+
+</ContentPage>

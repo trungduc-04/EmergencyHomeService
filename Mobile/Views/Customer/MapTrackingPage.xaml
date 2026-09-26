@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.MapTrackingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Theo dõi thợ">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Border
+            Grid.Row="0"
+            Padding="15"
+            Margin="10"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 12">
+
+            <VerticalStackLayout Spacing="5">
+
+                <Label
+                    Text="Theo dõi thợ"
+                    FontSize="20"
+                    FontAttributes="Bold" />
+
+                <Label
+                    x:Name="StatusLabel"
+                    Text="Đang kết nối..."
+                    FontSize="14" />
+
+                <Label
+                    x:Name="LocationLabel"
+                    Text="Vị trí Worker: chưa có"
+                    FontSize="14" />
+
+            </VerticalStackLayout>
+
+        </Border>
+
+        <WebView
+            Grid.Row="1"
+            x:Name="MapWebView" />
+
+    </Grid>
+
+</ContentPage>

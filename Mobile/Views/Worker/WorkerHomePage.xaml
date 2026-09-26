@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Worker.WorkerHomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Worker">
+
+    <Grid
+        RowDefinitions="Auto,*,Auto"
+        Padding="20"
+        RowSpacing="12">
+
+        <!-- ========================= -->
+        <!-- PHẦN TRÊN -->
+        <!-- ========================= -->
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            Spacing="10">
+
+            <Label
+                x:Name="WelcomeLabel"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Yêu cầu phù hợp gần bạn"
+                FontSize="21"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="SummaryLabel"
+                FontSize="15" />
+
+            <Border
+                Padding="15"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12">
+
+                <VerticalStackLayout
+                    Spacing="8">
+
+                    <Label
+                        Text="TRẠNG THÁI HOẠT ĐỘNG"
+                        FontSize="16"
+                        FontAttributes="Bold" />
+
+                    <Label
+                        x:Name="OnlineStatusLabel"
+                        Text="OFFLINE"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+
+                    <Button
+                        x:Name="OnlineButton"
+                        Text="BẬT ONLINE"
+                        Clicked="OnlineButton_Clicked" />
+
+                    <Button
+                        Text="THÔNG BÁO"
+                        Clicked="Notifications_Clicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Button
+                x:Name="UpdateLocationButton"
+                Text="CẬP NHẬT VỊ TRÍ"
+                Clicked="UpdateLocationButton_Clicked" />
+
+            <Label
+                x:Name="LocationLabel"
+                Text="Chưa cập nhật vị trí"
+                FontSize="14" />
+
+        </VerticalStackLayout>
+
+
+        <!-- ========================= -->
+        <!-- DANH SÁCH REQUEST -->
+        <!-- CollectionView TỰ CUỘN -->
+        <!-- ========================= -->
+
+        <CollectionView
+            Grid.Row="1"
+            x:Name="RequestsCollectionView"
+            SelectionMode="None">
+
+            <CollectionView.EmptyView>
+
+                <VerticalStackLayout
+                    Padding="20"
+                    Spacing="10"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="Hiện chưa có yêu cầu phù hợp."
+                        FontSize="18"
+                        HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Padding="15"
+                        Margin="0,5"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+
+                        <VerticalStackLayout
+                            Spacing="8">
+
+                            <Label
+                                Text="{Binding ServiceName}"
+                                FontSize="19"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding CustomerName, StringFormat='Khách hàng: {0}'}"
+                                FontSize="16" />
+
+                            <Label
+                                Text="{Binding Description}"
+                                FontSize="15" />
+
+                            <Label
+                                Text="{Binding DistanceKm, StringFormat='Khoảng cách: {0:F2} km'}"
+                                FontSize="15" />
+
+                            <Label
+                                Text="{Binding Address, StringFormat='Địa chỉ: {0}'}"
+                                FontSize="15" />
+
+                            <HorizontalStackLayout
+                                Spacing="10">
+
+                                <Button
+                                    Text="NHẬN"
+                                    Clicked="AcceptRequest_Clicked" />
+
+                                <Button
+                                    Text="TỪ CHỐI"
+                                    Clicked="RejectRequest_Clicked" />
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+
+        <!-- ========================= -->
+        <!-- NÚT LUÔN HIỂN THỊ Ở ĐÁY -->
+        <!-- ========================= -->
+
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,*,*"
+            ColumnSpacing="8">
+            
+
+            <Button
+                Grid.Column="0"
+                Text="LÀM MỚI"
+                Clicked="RefreshButton_Clicked" />
+
+            <Button
+                Grid.Column="1"
+                Text="HỒ SƠ"
+                Clicked="Profile_Clicked" />
+
+            <Button
+                Grid.Column="2"
+                Text="ĐĂNG XUẤT"
+                Clicked="LogoutButton_Clicked" />
+
+
+        </Grid>
+
+        <!-- Loading -->
+        <ActivityIndicator
+            Grid.Row="1"
+            x:Name="LoadingIndicator"
+            IsVisible="False"
+            IsRunning="False"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>

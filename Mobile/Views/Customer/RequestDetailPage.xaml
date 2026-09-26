@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.RequestDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Chi tiết yêu cầu">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="14">
+
+            <Label
+                x:Name="RequestTitleLabel"
+                Text="Chi tiết yêu cầu"
+                FontSize="28"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="ServiceLabel"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="StatusLabel"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Mô tả"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="DescriptionLabel"
+                FontSize="14" />
+
+            <Label
+                Text="Địa chỉ"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="AddressLabel"
+                FontSize="14" />
+
+            <Label
+                Text="Worker"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="WorkerLabel"
+                Text="Chưa có Worker"
+                FontSize="14" />
+
+            <Label
+                x:Name="CreatedAtLabel"
+                FontSize="13" />
+
+            <VerticalStackLayout
+                x:Name="ActionLayout"
+                Spacing="10">
+
+                <Button
+                    x:Name="TrackingButton"
+                    Text="THEO DÕI BẢN ĐỒ"
+                    IsVisible="False"
+                    Clicked="TrackingButton_Clicked" />
+
+                <Button
+                    x:Name="CancelButton"
+                    Text="HỦY YÊU CẦU"
+                    IsVisible="False"
+                    Clicked="CancelButton_Clicked" />
+
+                <Button
+                    x:Name="RatingButton"
+                    Text="ĐÁNH GIÁ THỢ"
+                    IsVisible="False"
+                    Clicked="RatingButton_Clicked" />
+
+            </VerticalStackLayout>
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

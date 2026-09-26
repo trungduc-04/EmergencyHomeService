@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.CustomerProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Hồ sơ cá nhân">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="14">
+
+            <Label
+                Text="Hồ sơ cá nhân"
+                FontSize="28"
+                FontAttributes="Bold" />
+
+            <Entry
+                x:Name="FullNameEntry"
+                Placeholder="Họ và tên" />
+
+            <Entry
+                x:Name="EmailEntry"
+                Placeholder="Email"
+                IsReadOnly="True" />
+
+            <Entry
+                x:Name="PhoneEntry"
+                Placeholder="Số điện thoại"
+                Keyboard="Telephone" />
+
+            <Entry
+                x:Name="AvatarEntry"
+                Placeholder="URL ảnh đại diện" />
+
+            <Button
+                x:Name="SaveButton"
+                Text="LƯU THAY ĐỔI"
+                Clicked="SaveButton_Clicked" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

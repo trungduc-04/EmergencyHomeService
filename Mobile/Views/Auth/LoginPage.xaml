@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Auth.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Đăng nhập">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="20"
+            VerticalOptions="Center">
+
+            <Label
+                Text="Emergency Home Service"
+                FontSize="28"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Đăng nhập"
+                FontSize="22"
+                HorizontalOptions="Center" />
+
+            <Entry
+                x:Name="EmailOrPhoneEntry"
+                Placeholder="Email hoặc số điện thoại" />
+
+            <Entry
+                x:Name="PasswordEntry"
+                Placeholder="Mật khẩu"
+                IsPassword="True"
+                Keyboard="Default" />
+
+            <Button
+                x:Name="LoginButton"
+                Text="ĐĂNG NHẬP"
+                Clicked="LoginButton_Clicked" />
+
+            <Button
+                Text="TẠO TÀI KHOẢN"
+                Clicked="RegisterButton_Clicked" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+            <Label
+                x:Name="ErrorLabel"
+                TextColor="Red"
+                IsVisible="False"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

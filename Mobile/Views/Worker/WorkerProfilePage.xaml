@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Worker.WorkerProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Hồ sơ Worker">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="14">
+
+            <Label
+                Text="Hồ sơ Worker"
+                FontSize="28"
+                FontAttributes="Bold" />
+
+            <Entry
+                x:Name="NameEntry"
+                Placeholder="Họ và tên"
+                FontSize="18"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="EmailEntry"
+                Placeholder="Email"
+                Keyboard="Email"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Entry
+                x:Name="PhoneEntry"
+                Placeholder="Số điện thoại"
+                Keyboard="Telephone"
+                ClearButtonVisibility="WhileEditing" />
+
+            <Label
+                Text="Ảnh đại diện"
+                FontAttributes="Bold" />
+
+            <Entry
+                x:Name="AvatarEntry"
+                Placeholder="URL ảnh đại diện" />
+
+            <Label
+                x:Name="RatingLabel" />
+
+            <Label
+                x:Name="JobsLabel" />
+
+            <Label
+                x:Name="VerifiedLabel" />
+
+            <Editor
+                x:Name="BioEditor"
+                Placeholder="Giới thiệu bản thân"
+                MinimumHeightRequest="120" />
+
+            <Entry
+                x:Name="ExperienceEntry"
+                Placeholder="Số năm kinh nghiệm"
+                Keyboard="Numeric" />
+
+            <Button
+                Text="LƯU HỒ SƠ"
+                Clicked="SaveProfile_Clicked" />
+
+            <Label
+                Text="Dịch vụ của tôi"
+                FontSize="18"
+                FontAttributes="Bold" />
+
+            <VerticalStackLayout
+                x:Name="ServicesLayout"
+                Spacing="8" />
+
+            <Button
+                Text="LƯU DỊCH VỤ"
+                Clicked="SaveServices_Clicked" />
+
+            <Button
+                Text="XEM ĐÁNH GIÁ"
+                Clicked="ViewRatings_Clicked" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

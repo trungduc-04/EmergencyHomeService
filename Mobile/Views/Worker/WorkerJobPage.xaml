@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Worker.WorkerJobPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Công việc">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="15">
+
+            <Label
+                Text="Công việc hiện tại"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="ServiceNameLabel"
+                FontSize="21"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="CustomerLabel"
+                FontSize="16" />
+
+            <Label
+                Text="Mô tả sự cố"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="DescriptionLabel"
+                FontSize="16" />
+
+            <Label
+                x:Name="AddressLabel"
+                FontSize="16" />
+
+            <Label
+                x:Name="DistanceLabel"
+                FontSize="16" />
+            <Label
+                Text="Vị trí Worker"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="LocationLabel"
+                Text="GPS: đang chờ..."
+                FontSize="14" />
+
+            <Label
+                Text="Trạng thái hiện tại"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="StatusLabel"
+                FontSize="22"
+                FontAttributes="Bold" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+            <Button
+                x:Name="OnTheWayButton"
+                Text="TÔI ĐANG ĐẾN"
+                Clicked="OnTheWayButton_Clicked"
+                IsVisible="False" />
+
+            <Button
+                x:Name="ArrivedButton"
+                Text="TÔI ĐÃ ĐẾN"
+                Clicked="ArrivedButton_Clicked"
+                IsVisible="False" />
+
+            <Button
+                x:Name="InProgressButton"
+                Text="BẮT ĐẦU SỬA"
+                Clicked="InProgressButton_Clicked"
+                IsVisible="False" />
+
+            <Button
+                x:Name="CompletedButton"
+                Text="HOÀN THÀNH CÔNG VIỆC"
+                Clicked="CompletedButton_Clicked"
+                IsVisible="False" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

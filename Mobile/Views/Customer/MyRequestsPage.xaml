@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.MyRequestsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Yêu cầu của tôi">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,*">
+
+        <Label
+            Text="Yêu cầu của tôi"
+            FontSize="28"
+            FontAttributes="Bold" />
+
+        <CollectionView
+            Grid.Row="1"
+            Margin="0,15,0,0"
+            x:Name="RequestsCollectionView"
+            SelectionMode="None">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="Bạn chưa có yêu cầu nào."
+                        FontSize="16" />
+
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border
+                        Margin="0,0,0,12"
+                        Padding="15"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+
+                        <VerticalStackLayout
+                            Spacing="8">
+
+                            <Label
+                                Text="{Binding ServiceName}"
+                                FontSize="19"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Description}"
+                                FontSize="14" />
+
+                            <Label
+                                Text="{Binding Status}"
+                                FontSize="15"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Address}"
+                                FontSize="13" />
+
+                            <Label
+                                Text="{Binding CreatedAt}"
+                                FontSize="12" />
+
+                            <Button
+                                Text="XEM CHI TIẾT"
+                                Clicked="ViewRequest_Clicked"
+                                CommandParameter="{Binding .}" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <ActivityIndicator
+            Grid.Row="1"
+            x:Name="LoadingIndicator"
+            IsVisible="False"
+            IsRunning="False"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>

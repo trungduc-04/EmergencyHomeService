@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Emergency Home Service - Realtime Test</title>
+
+    <!-- ============================= -->
+    <!-- LEAFLET CSS -->
+    <!-- ============================= -->
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin="" />
+
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        #status {
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            padding: 15px;
+            min-height: 100px;
+            margin-bottom: 25px;
+        }
+
+        .message {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .message:last-child {
+            border-bottom: none;
+        }
+
+        #location {
+            border: 1px solid #ccc;
+            padding: 15px;
+            min-height: 80px;
+            margin-bottom: 25px;
+        }
+
+        /* ============================= */
+        /* MAP */
+        /* ============================= */
+
+        #map {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin-bottom: 30px;
+        }
+
+        /* ============================= */
+        /* CUSTOM MARKERS */
+        /* ============================= */
+
+        .customer-marker {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .worker-marker {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .leaflet-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .leaflet-container img {
+            max-width: none !important;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <h1>Emergency Home Service</h1>
+
+    <h2>SignalR Realtime Test</h2>
+
+    <label>
+        JWT Token:
+    </label>
+
+    <input
+        id="token"
+        type="text"
+        placeholder="Dán Customer JWT vào đây">
+
+
+    <button onclick="connectSignalR()">
+        Connect
+    </button>
+
+    <button onclick="disconnectSignalR()">
+        Disconnect
+    </button>
+
+
+    <div id="status">
+        Chưa kết nối
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- NOTIFICATIONS -->
+    <!-- ============================= -->
+
+    <h2>Notifications</h2>
+
+    <div id="messages">
+        Chưa có notification.
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- WORKER LOCATION -->
+    <!-- ============================= -->
+
+    <h2>Worker Location</h2>
+
+    <div id="location">
+        Chưa nhận vị trí Worker.
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- MAP -->
+    <!-- ============================= -->
+
+    <h2>Map</h2>
+
+    <div id="map"></div>
+
+
+    <!-- ============================= -->
+    <!-- SIGNALR -->
+    <!-- ============================= -->
+
+    <script src="/lib/signalr/signalr.min.js"></script>
+
+
+    <!-- ============================= -->
+    <!-- LEAFLET -->
+    <!-- ============================= -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin="">
+    </script>
+
+
+    <script>
+
+        // ==========================================
+        // GLOBAL VARIABLES
+        // ==========================================
+
+        let connection = null;
+
+        let map = null;
+
+        let customerMarker = null;
+
+        let workerMarker = null;
+
+        let firstWorkerLocationReceived = false;
+
+
+        // ==========================================
+        // CUSTOMER TEST LOCATION
+        // ==========================================
+
+        const customerLocation = {
+            lat: 10.772622,
+            lng: 106.660172
+        };
+
+
+        // ==========================================
+        // CREATE CUSTOMER ICON
+        // ==========================================
+
+        const customerIcon =
+            L.divIcon({
+                className: "",
+                html: '<div class="customer-marker">📍</div>',
+                iconSize: [40, 40],
+                iconAnchor: [20, 20]
+            });
+
+
+        // ==========================================
+        // CREATE WORKER ICON
+        // ==========================================
+
+        const workerIcon =
+            L.divIcon({
+                className: "",
+                html: '<div class="worker-marker">🚗</div>',
+                iconSize: [44, 44],
+                iconAnchor: [22, 22]
+            });
+
+
+        // ==========================================
+        // INITIALIZE MAP
+        // ==========================================
+
+        function initMap() {
+
+            map = L.map("map").setView(
+                [
+                    customerLocation.lat,
+                    customerLocation.lng
+                ],
+                14
+            );
+
+
+            // OpenStreetMap tiles
+
+            L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                    maxZoom: 19,
+
+                    attribution:
+                        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }
+            ).addTo(map);
+
+
+            // Customer marker
+
+            customerMarker =
+                L.marker(
+                    [
+                        customerLocation.lat,
+                        customerLocation.lng
+                    ],
+                    {
+                        icon: customerIcon
+                    }
+                )
+                .addTo(map)
+                .bindPopup(
+                    "<b>Customer</b><br>Vị trí khách hàng"
+                );
+
+        }
+
+
+        // ==========================================
+        // UPDATE WORKER MARKER
+        // ==========================================
+
+        function updateWorkerMarker(location) {
+
+            const workerLat =
+                Number(location.latitude);
+
+            const workerLng =
+                Number(location.longitude);
+
+
+            if (
+                Number.isNaN(workerLat) ||
+                Number.isNaN(workerLng)
+            ) {
+                console.error(
+                    "Tọa độ Worker không hợp lệ:",
+                    location
+                );
+
+                return;
+            }
+
+
+            const workerPosition =
+                [
+                    workerLat,
+                    workerLng
+                ];
+
+
+            // --------------------------------------
+            // FIRST GPS
+            // --------------------------------------
+
+            if (workerMarker === null) {
+
+                workerMarker =
+                    L.marker(
+                        workerPosition,
+                        {
+                            icon: workerIcon
+                        }
+                    )
+                    .addTo(map)
+                    .bindPopup(
+                        "<b>Worker</b><br>" +
+                        "Thợ sửa chữa"
+                    );
+
+
+                // Lần đầu có GPS thì đưa cả
+                // Customer + Worker vào màn hình
+
+                const bounds =
+                    L.latLngBounds([
+                        [
+                            customerLocation.lat,
+                            customerLocation.lng
+                        ],
+                        workerPosition
+                    ]);
+
+
+                map.fitBounds(
+                    bounds,
+                    {
+                        padding: [50, 50]
+                    }
+                );
+
+
+                firstWorkerLocationReceived = true;
+
+            }
+
+            // --------------------------------------
+            // GPS UPDATE
+            // --------------------------------------
+
+            else {
+
+                workerMarker.setLatLng(
+                    workerPosition
+                );
+
+            }
+
+        }
+
+
+        // ==========================================
+        // CONNECT SIGNALR
+        // ==========================================
+
+        async function connectSignalR() {
+
+            const token =
+                document
+                    .getElementById("token")
+                    .value
+                    .trim();
+
+
+            if (!token) {
+
+                alert(
+                    "Hãy dán Customer JWT trước."
+                );
+
+                return;
+            }
+
+
+            // --------------------------------------
+            // CREATE CONNECTION
+            // --------------------------------------
+
+            connection =
+                new signalR.HubConnectionBuilder()
+                    .withUrl(
+                        "/hubs/notifications",
+                        {
+                            accessTokenFactory:
+                                () => token
+                        }
+                    )
+                    .withAutomaticReconnect()
+                    .build();
+
+
+            // ======================================
+            // NOTIFICATION EVENT
+            // ======================================
+
+            connection.on(
+                "ReceiveNotification",
+                function (notification) {
+
+                    const container =
+                        document.getElementById(
+                            "messages"
+                        );
+
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "message";
+
+
+                    const title =
+                        document.createElement(
+                            "strong"
+                        );
+
+                    title.textContent =
+                        notification.title;
+
+
+                    const message =
+                        document.createElement(
+                            "div"
+                        );
+
+                    message.textContent =
+                        notification.message;
+
+
+                    const type =
+                        document.createElement(
+                            "small"
+                        );
+
+                    type.textContent =
+                        notification.type;
+
+
+                    div.appendChild(title);
+
+                    div.appendChild(
+                        document.createElement("br")
+                    );
+
+                    div.appendChild(message);
+
+                    div.appendChild(
+                        document.createElement("br")
+                    );
+
+                    div.appendChild(type);
+
+
+                    container.prepend(div);
+
+                }
+            );
+
+
+            // ======================================
+            // WORKER GPS EVENT
+            // ======================================
+
+            connection.on(
+                "ReceiveWorkerLocation",
+                function (location) {
+
+                    console.log(
+                        "Worker GPS:",
+                        location
+                    );
+
+
+                    // ------------------------------
+                    // UPDATE TEXT
+                    // ------------------------------
+
+                    const container =
+                        document.getElementById(
+                            "location"
+                        );
+
+
+                    container.innerHTML = "";
+
+
+                    const request =
+                        document.createElement(
+                            "div"
+                        );
+
+                    request.textContent =
+                        "Request: " +
+                        location.requestId;
+
+
+                    const worker =
+                        document.createElement(
+                            "div"
+                        );
+
+                    worker.textContent =
+                        "Worker: " +
+                        location.workerId;
+
+
+                    const status =
+                        document.createElement(
+                            "div"
+                        );
+
+                    status.textContent =
+                        "Status: " +
+                        location.status;
+
+
+                    const latitude =
+                        document.createElement(
+                            "div"
+                        );
+
+                    latitude.textContent =
+                        "Latitude: " +
+                        location.latitude;
+
+
+                    const longitude =
+                        document.createElement(
+                            "div"
+                        );
+
+                    longitude.textContent =
+                        "Longitude: " +
+                        location.longitude;
+
+
+                    const updated =
+                        document.createElement(
+                            "div"
+                        );
+
+                    updated.textContent =
+                        "Updated: " +
+                        location.updatedAt;
+
+
+                    container.appendChild(
+                        request
+                    );
+
+                    container.appendChild(
+                        worker
+                    );
+
+                    container.appendChild(
+                        status
+                    );
+
+                    container.appendChild(
+                        latitude
+                    );
+
+                    container.appendChild(
+                        longitude
+                    );
+
+                    container.appendChild(
+                        updated
+                    );
+
+
+                    // ------------------------------
+                    // UPDATE MAP
+                    // ------------------------------
+
+                    updateWorkerMarker(
+                        location
+                    );
+
+                }
+            );
+
+
+            // ======================================
+            // RECONNECT
+            // ======================================
+
+            connection.onreconnecting(
+                function () {
+
+                    document
+                        .getElementById("status")
+                        .textContent =
+                        "SignalR đang kết nối lại...";
+                }
+            );
+
+
+            connection.onreconnected(
+                function () {
+
+                    document
+                        .getElementById("status")
+                        .textContent =
+                        "SignalR đã kết nối lại.";
+                }
+            );
+
+
+            connection.onclose(
+                function () {
+
+                    document
+                        .getElementById("status")
+                        .textContent =
+                        "SignalR đã ngắt kết nối.";
+                }
+            );
+
+
+            // ======================================
+            // START
+            // ======================================
+
+            try {
+
+                await connection.start();
+
+
+                document
+                    .getElementById("status")
+                    .textContent =
+                    "SignalR đã kết nối thành công.";
+
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+
+                document
+                    .getElementById("status")
+                    .textContent =
+                    "Kết nối SignalR thất bại.";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // DISCONNECT
+        // ==========================================
+
+        async function disconnectSignalR() {
+
+            if (connection !== null) {
+
+                await connection.stop();
+
+                connection = null;
+
+
+                document
+                    .getElementById("status")
+                    .textContent =
+                    "Đã ngắt kết nối.";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // INIT MAP WHEN PAGE LOADS
+        // ==========================================
+
+        initMap();
+
+    </script>
+
+</body>
+
+</html>

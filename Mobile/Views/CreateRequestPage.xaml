@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.CreateRequestPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Tạo yêu cầu">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="16">
+
+            <Label
+                Text="Tạo yêu cầu sửa chữa"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Dịch vụ"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Label
+                x:Name="ServiceNameLabel"
+                FontSize="20" />
+
+            <Label
+                Text="Mô tả sự cố"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Editor
+                x:Name="DescriptionEditor"
+                Placeholder="Ví dụ: Ổ điện trong phòng khách bị mất điện..."
+                AutoSize="TextChanges"
+                MinimumHeightRequest="120" />
+
+            <Label
+                Text="Địa chỉ"
+                FontSize="16"
+                FontAttributes="Bold" />
+
+            <Entry
+                x:Name="AddressEntry"
+                Placeholder="Địa chỉ nơi cần sửa chữa" />
+
+            <Button
+                x:Name="GetLocationButton"
+                Text="LẤY VỊ TRÍ HIỆN TẠI"
+                Clicked="GetLocationButton_Clicked" />
+
+            <Label
+                x:Name="LocationLabel"
+                Text="Chưa lấy vị trí"
+                FontSize="14" />
+
+            <Button
+                x:Name="CreateRequestButton"
+                Text="TẠO YÊU CẦU"
+                Clicked="CreateRequestButton_Clicked" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

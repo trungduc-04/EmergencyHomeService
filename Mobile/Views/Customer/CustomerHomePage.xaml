@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.CustomerHomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Trang chủ">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="20">
+
+            <Label
+                x:Name="WelcomeLabel"
+                FontSize="26"
+                FontAttributes="Bold" />
+
+
+            <Border
+                x:Name="CurrentRequestBorder"
+                Padding="15"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 12"
+                IsVisible="False">  
+
+                <VerticalStackLayout
+                    
+            Spacing="8">
+
+                    <Button
+                Text="🔔 THÔNG BÁO"
+                Clicked="Notifications_Clicked" />
+
+                    <Button
+                Text="YÊU CẦU CỦA TÔI"
+                Clicked="MyRequests_Clicked" />
+
+                    <Label
+                Text="YÊU CẦU ĐANG XỬ LÝ"
+                FontSize="16"
+                FontAttributes="Bold" />
+                    
+
+                        <Label
+                x:Name="CurrentRequestLabel"
+                FontSize="15" />
+
+                    <Button
+                Text="XEM YÊU CẦU"
+                Clicked="ViewCurrentRequest_Clicked" /> 
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+
+
+            <Label
+                Text="Dịch vụ sửa chữa"
+                FontSize="20"
+                FontAttributes="Bold" />
+
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsVisible="False"
+                IsRunning="False" />
+
+            <CollectionView
+                x:Name="ServicesCollectionView"
+                SelectionMode="Single"
+                SelectionChanged="ServicesCollectionView_SelectionChanged">
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <Border
+                            Padding="15"
+                            Margin="0,5"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12">
+
+                            <VerticalStackLayout
+                                Spacing="8">
+
+                                <Label
+                                    Text="{Binding ServiceName}"
+                                    FontSize="18"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding Description}"
+                                    FontSize="14" />
+
+                            </VerticalStackLayout>
+
+                        </Border>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+            <Button
+                Text="HỒ SƠ CÁ NHÂN"
+                Clicked="Profile_Clicked" />
+
+            <Button
+                Text="Đăng xuất"
+                Clicked="Logout_Clicked" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

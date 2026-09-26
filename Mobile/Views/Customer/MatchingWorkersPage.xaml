@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="EmergencyHomeServiceMobile.Views.Customer.MatchingWorkersPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Tìm thợ">
+
+    <VerticalStackLayout
+        Padding="20"
+        Spacing="15">
+
+        <Label
+            Text="Đang tìm thợ phù hợp..."
+            FontSize="24"
+            FontAttributes="Bold" />
+
+        <Label
+            x:Name="StatusLabel"
+            FontSize="16" />
+
+        <Label
+            x:Name="RadiusLabel"
+            FontSize="14" />
+
+        <ActivityIndicator
+            x:Name="LoadingIndicator"
+            IsVisible="False"
+            IsRunning="False" />
+
+        <CollectionView
+            x:Name="WorkersCollectionView"
+            SelectionMode="None">
+
+            <CollectionView.EmptyView>
+
+                <VerticalStackLayout
+                    Padding="20"
+                    Spacing="10">
+
+                    <Label
+                        Text="Chưa tìm thấy thợ phù hợp."
+                        FontSize="18"
+                        HorizontalOptions="Center" />
+
+                    <Label
+                        Text="Hãy thử làm mới sau."
+                        HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Padding="15"
+                        Margin="0,5"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 12">
+
+                        <VerticalStackLayout
+                            Spacing="8">
+
+                            <Label
+                                Text="{Binding FullName}"
+                                FontSize="19"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding DistanceKm, StringFormat='Khoảng cách: {0:F2} km'}"
+                                FontSize="15" />
+
+                            <Label
+                                Text="{Binding AverageRating, StringFormat='Đánh giá: {0:F1}/5'}"
+                                FontSize="15" />
+
+                            <Label
+                                Text="{Binding TotalJobs, StringFormat='Số công việc: {0}'}"
+                                FontSize="15" />
+
+                            <Label
+                                Text="{Binding IsOnline, StringFormat='Online: {0}'}"
+                                FontSize="15" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <Button
+            Text="LÀM MỚI"
+            Clicked="RefreshButton_Clicked" />
+        <Button
+            x:Name="RateButton"
+            Text="ĐÁNH GIÁ THỢ"
+            IsVisible="False"
+            Clicked="RateButton_Clicked" />
+
+        <Button
+            Text="THEO DÕI TRÊN BẢN ĐỒ"
+            Clicked="OpenMap_Clicked" />
+
+        <Button
+            Text="QUAY LẠI"
+            Clicked="BackButton_Clicked" />
+
+
+    </VerticalStackLayout>
+
+</ContentPage>
